@@ -13,9 +13,11 @@ app.use(express.json({ limit: "1mb" }));
 // Restrict this to the actual origin(s) your app runs from once you
 // know them (your GitHub Pages URL, your custom domain, etc).
 // Example: cors({ origin: "https://yourname.github.io" })
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map((s) => s.trim())
-  : "*";
+const rawOrigins = process.env.ALLOWED_ORIGINS;
+const allowedOrigins =
+  !rawOrigins || rawOrigins.trim() === "*"
+    ? "*"
+    : rawOrigins.split(",").map((s) => s.trim());
 app.use(cors({ origin: allowedOrigins }));
 
 // --- very simple rate limiting per IP ---------------------------------
