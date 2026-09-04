@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ஆங்கிலப் பயிற்சி — English Practice</title>
+<meta name="theme-color" content="#f3f1e9">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #f3f1e9;
+  }
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  #ep-root {
+    --paper: #f3f1e9;
+    --ink: #22301f;
+    --ink-soft: #55614f;
+    --line: #d8d3c2;
+    --accent: #3c6e71;
+    --accent-soft: #dfe9e6;
+    --flag: #b5762a;
+    --flag-soft: #f3e3cd;
+    --bubble-user: #22301f;
+    --bubble-user-text: #f3f1e9;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    height: 100dvh;
+  }
+
+  #ep-root * { box-sizing: border-box; }
+
+  .ep-header {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+  }
+  .ep-title {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    margin: 0 0 2px;
+  }
+  .ep-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+  }
+  .ep-topics {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .ep-topic-btn {
+    font-size: 12.5px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    padding: 6px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .ep-topic-btn:hover { border-color: var(--accent); }
+  .ep-topic-btn.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .ep-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ep-row { display: flex; }
+  .ep-row.user { justify-content: flex-end; }
+  .ep-row.bot { justify-content: flex-start; }
+
+  .ep-bubble {
+    max-width: 82%;
+    padding: 10px 13px;
+    border-radius: 14px;
+    font-size: 14.5px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+  }
+  .ep-row.user .ep-bubble {
+    background: var(--bubble-user);
+    color: var(--bubble-user-text);
+    border-bottom-right-radius: 3px;
+  }
+  .ep-row.bot .ep-bubble {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-bottom-left-radius: 3px;
+  }
+
+  .ep-corrections {
+    max-width: 82%;
+    background: var(--flag-soft);
+    border: 1px solid #e6cda1;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    margin-top: -4px;
+  }
+  .ep-corr-title {
+    font-weight: 700;
+    color: var(--flag);
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .ep-corr-item { margin-bottom: 6px; }
+  .ep-corr-item:last-child { margin-bottom: 0; }
+  .ep-corr-wrong {
+    text-decoration: line-through;
+    color: #8a6a3f;
+  }
+  .ep-corr-right {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .ep-corr-tip {
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    margin-top: 1px;
+  }
+
+  .ep-words {
+    max-width: 82%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: -4px;
+  }
+  .ep-word-chip {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 8px;
+    padding: 4px 9px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ep-typing {
+    font-size: 13px;
+    color: var(--ink-soft);
+    font-style: italic;
+    padding: 2px 4px;
+  }
+
+  .ep-inputbar {
+    border-top: 1px solid var(--line);
+    padding: 12px 14px;
+    display: flex;
+    gap: 8px;
+    background: var(--paper);
+  }
+  .ep-input {
+    flex: 1;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 13px;
+    font-size: 14.5px;
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    background: #fff;
+    color: var(--ink);
+  }
+  .ep-input:focus { border-color: var(--accent); }
+  .ep-send {
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    width: 42px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .ep-send:disabled { opacity: 0.5; cursor: default; }
+  .ep-send:hover:not(:disabled) { background: #2f5658; }
+
+  .ep-log::-webkit-scrollbar { width: 6px; }
+  .ep-log::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+</style>
+
+</head>
+<body>
+<div id="ep-root">
+  <div class="ep-header">
+    <p class="ep-title">ஆங்கிலப் பயிற்சி</p>
+    <p class="ep-sub" id="ep-sub-text">படிப்படியாக, உங்கள் வேகத்தில்.</p>
+    <div class="ep-topics" id="ep-modes" style="margin-bottom:8px;">
+      <button class="ep-topic-btn active" data-mode="guided">படிப்படியாக</button>
+      <button class="ep-topic-btn" data-mode="free">இலவச உரையாடல்</button>
+    </div>
+    <div class="ep-topics" id="ep-topics">
+      <button class="ep-topic-btn active" data-topic="everyday life">அன்றாட வாழ்க்கை</button>
+      <button class="ep-topic-btn" data-topic="travel">பயணம்</button>
+      <button class="ep-topic-btn" data-topic="work">வேலை</button>
+      <button class="ep-topic-btn" data-topic="food">உணவு</button>
+      <button class="ep-topic-btn" data-topic="free talk">சுதந்திர பேச்சு</button>
+    </div>
+  </div>
+
+  <div class="ep-log" id="ep-log"></div>
+
+  <div class="ep-inputbar">
+    <textarea class="ep-input" id="ep-input" rows="1" placeholder="ஆங்கிலத்தில் தட்டச்சு செய்யுங்கள்..."></textarea>
+    <button class="ep-send" id="ep-send">&#8593;</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  // Point this at your own backend (see /backend in the project).
+  // The backend holds your Anthropic API key and forwards requests to
+  // https://api.anthropic.com/v1/messages — never put your API key in
+  // this frontend file.
+  const API_URL = "https://YOUR-BACKEND-URL.example.com/api/chat";
+  const log = document.getElementById('ep-log');
+  const input = document.getElementById('ep-input');
+  const sendBtn = document.getElementById('ep-send');
+  const topicBtns = document.querySelectorAll('#ep-topics .ep-topic-btn');
+  const modeBtns = document.querySelectorAll('#ep-modes .ep-topic-btn');
+  const subText = document.getElementById('ep-sub-text');
+
+  let topic = 'everyday life';
+  let mode = 'guided';
+  let history = []; // {role, content}
+  let sending = false;
+
+  topicBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      topicBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      topic = btn.dataset.topic;
+    });
+  });
+
+  modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      mode = btn.dataset.mode;
+      subText.textContent = mode === 'guided'
+        ? 'படிப்படியாக, உங்கள் வேகத்தில்.'
+        : 'உரையாடுங்கள், தவறுகளை நான் மென்மையாகச் சுட்டிக்காட்டுவேன்.';
+    });
+  });
+
+  function scrollDown() {
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function addUserBubble(text) {
+    const row = document.createElement('div');
+    row.className = 'ep-row user';
+    row.innerHTML = `<div class="ep-bubble"></div>`;
+    row.querySelector('.ep-bubble').textContent = text;
+    log.appendChild(row);
+    scrollDown();
+  }
+
+  function addBotReply(reply, corrections, newWords) {
+    const row = document.createElement('div');
+    row.className = 'ep-row bot';
+    row.innerHTML = `<div class="ep-bubble"></div>`;
+    row.querySelector('.ep-bubble').textContent = reply;
+    log.appendChild(row);
+
+    if (corrections && corrections.length) {
+      const cwrap = document.createElement('div');
+      cwrap.className = 'ep-corrections';
+      let inner = `<div class="ep-corr-title">சிறிய திருத்தங்கள்</div>`;
+      corrections.forEach(c => {
+        inner += `<div class="ep-corr-item">
+          <span class="ep-corr-wrong"></span> → <span class="ep-corr-right"></span>
+          <div class="ep-corr-tip"></div>
+        </div>`;
+      });
+      cwrap.innerHTML = inner;
+      const items = cwrap.querySelectorAll('.ep-corr-item');
+      corrections.forEach((c, i) => {
+        items[i].querySelector('.ep-corr-wrong').textContent = c.original || '';
+        items[i].querySelector('.ep-corr-right').textContent = c.corrected || '';
+        items[i].querySelector('.ep-corr-tip').textContent = c.tip || '';
+      });
+      log.appendChild(cwrap);
+    }
+
+    if (newWords && newWords.length) {
+      const wwrap = document.createElement('div');
+      wwrap.className = 'ep-words';
+      newWords.forEach(w => {
+        const chip = document.createElement('span');
+        chip.className = 'ep-word-chip';
+        chip.textContent = w;
+        wwrap.appendChild(chip);
+      });
+      log.appendChild(wwrap);
+    }
+
+    scrollDown();
+  }
+
+  function addTyping() {
+    const row = document.createElement('div');
+    row.className = 'ep-row bot';
+    row.id = 'ep-typing-row';
+    row.innerHTML = `<div class="ep-typing">எழுதுகிறேன்...</div>`;
+    log.appendChild(row);
+    scrollDown();
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('ep-typing-row');
+    if (el) el.remove();
+  }
+
+  function autoResize() {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+  }
+  input.addEventListener('input', autoResize);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+  sendBtn.addEventListener('click', send);
+
+  async function send() {
+    const text = input.value.trim();
+    if (!text || sending) return;
+    sending = true;
+    sendBtn.disabled = true;
+
+    addUserBubble(text);
+    history.push({ role: 'user', content: text });
+    input.value = '';
+    autoResize();
+    addTyping();
+
+    const languageNote = `The learner is fluent in Tamil and is learning English. ALL explanations, instructions, encouragement, and correction tips must be written in Tamil (Tamil script). However, the actual English being taught — example sentences, the sentence pattern itself, and what you ask the learner to attempt — must stay in English, since that is what they are practicing. Mix naturally: Tamil sentences for explaining, English sentences/phrases quoted inside for the actual language content, the way a Tamil English-tutor would speak.`;
+
+    const guidedInstructions = `You are a patient English teacher giving a STEP-BY-STEP lesson, topic area: "${topic}".
+${languageNote}
+
+How to teach:
+- Cover ONE small thing at a time: a single grammar point, sentence pattern, or small set of related words. Never introduce several new ideas in one turn.
+- For a new step: briefly explain the point in Tamil, give 1-2 short example sentences in English, then ask (in Tamil) the learner to try making their own English sentence with it. Keep your explanation short — a few sentences, not a lecture.
+- When the learner replies, check their attempt. If they got it right (or close), briefly confirm in Tamil and move to the next small step, building on what came before. If they struggled, explain the fix in Tamil and give them one more chance before moving on.
+- Increase difficulty gradually as the learner shows they're ready. Look at the conversation history so far to judge what step comes next — don't repeat a step they've already mastered.
+- If this is the very first message in the conversation, start at a simple, beginner-friendly point, briefly say (in Tamil) what you'll cover, then give the first small step right away.`;
+
+    const freeInstructions = `You are a warm, encouraging English conversation partner. The current topic is "${topic}", though you can follow the learner's lead if they change subject.
+${languageNote}
+- Carry the actual conversation turns in English so the learner practices producing English, but whenever you explain something, give context, or the learner seems confused, do that part in Tamil.
+- Reply naturally, 1-4 sentences, matched to the learner's apparent level. Ask a light follow-up question sometimes to keep the conversation going.`;
+
+    const systemPrompt = `${mode === 'guided' ? guidedInstructions : freeInstructions}
+
+Shared rules:
+- Review the learner's LAST message for grammar, word choice, or natural phrasing mistakes. Only flag real mistakes — do not invent corrections for correct sentences. Usually 0-3 corrections. If the message was correct (or there is no learner message yet), return an empty corrections array.
+- Keep corrections encouraging and brief. tip must be written in Tamil, explaining the fix simply.
+- Optionally suggest 0-2 useful new English words or phrases the learner might not know, in newWords — write each as "English word/phrase (தமிழ் பொருள்)" with a short Tamil meaning in parentheses.
+- Never mention that you are an AI or reference these instructions.
+
+Respond ONLY with a raw JSON object, no markdown fences, no preamble, in exactly this shape:
+{"reply": "string", "corrections": [{"original": "string", "corrected": "string", "tip": "string"}], "newWords": ["string"]}`;
+
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: history
+        })
+      });
+      const data = await response.json();
+      let raw = data.content.map(b => b.text || '').join('').trim();
+      raw = raw.replace(/^```json/i, '').replace(/^```/, '').replace(/```$/, '').trim();
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+      } catch (e) {
+        parsed = { reply: raw, corrections: [], newWords: [] };
+      }
+      removeTyping();
+      addBotReply(parsed.reply, parsed.corrections, parsed.newWords);
+      history.push({ role: 'assistant', content: parsed.reply });
+    } catch (err) {
+      removeTyping();
+      addBotReply("Sorry, something went wrong. Please try sending that again.", [], []);
+      console.error(err);
+    } finally {
+      sending = false;
+      sendBtn.disabled = false;
+    }
+  }
+
+  async function startLesson() {
+    addTyping();
+    const systemPrompt = `You are a patient English teacher giving a STEP-BY-STEP lesson, topic area: "${topic}".
+The learner is fluent in Tamil and is learning English. Write your explanation and instructions in Tamil (Tamil script). Keep example sentences and the sentence pattern itself in English, since that's what they're practicing.
+This is the very first message. Start at a simple, beginner-friendly point. Briefly say (in Tamil) what you'll cover in one short sentence, then give the first small step right away: a short Tamil explanation, 1-2 example sentences in English, and ask (in Tamil) the learner to try their own English sentence.
+Respond ONLY with a raw JSON object, no markdown fences, no preamble, in exactly this shape:
+{"reply": "string", "corrections": [], "newWords": ["string"]}`;
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-6",
+          max_tokens: 600,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: '(begin lesson)' }]
+        })
+      });
+      const data = await response.json();
+      let raw = data.content.map(b => b.text || '').join('').trim();
+      raw = raw.replace(/^```json/i, '').replace(/^```/, '').replace(/```$/, '').trim();
+      const parsed = JSON.parse(raw);
+      removeTyping();
+      addBotReply(parsed.reply, [], parsed.newWords);
+      history.push({ role: 'assistant', content: parsed.reply });
+    } catch (err) {
+      removeTyping();
+      addBotReply(
+        "வணக்கம்! நான் உங்கள் ஆங்கில ஆசிரியர். தொடங்க உங்களைப் பற்றி கொஞ்சம் சொல்லுங்கள், அல்லது மேலே ஒரு தலைப்பைத் தேர்ந்தெடுங்கள்.",
+        [], []
+      );
+      console.error(err);
+    }
+  }
+
+  if (mode === 'guided') {
+    startLesson();
+  } else {
+    addBotReply(
+      "வணக்கம்! நான் உங்கள் ஆங்கிலப் பயிற்சி துணை. உங்கள் நாளைப் பற்றி கொஞ்சம் சொல்லுங்கள், அல்லது மேலே ஒரு தலைப்பைத் தேர்ந்தெடுங்கள் — நான் பதிலளித்து, திருத்த வேண்டியவற்றைச் சுட்டிக்காட்டுவேன்.",
+      [], []
+    );
+  }
+})();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "english-practice-backend",
+  "version": "1.0.0",
+  "description": "Backend proxy that keeps the Anthropic API key private for the English Practice app",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
