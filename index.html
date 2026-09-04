@@ -423,7 +423,7 @@ Respond ONLY with a raw JSON object, no markdown fences, no preamble, in exactly
       history.push({ role: 'assistant', content: parsed.reply });
     } catch (err) {
       removeTyping();
-      addBotReply("Sorry, something went wrong. Please try sending that again.", [], []);
+      addBotReply("Error: " + (err && err.message ? err.message : String(err)), [], []);
       console.error(err);
     } finally {
       sending = false;
